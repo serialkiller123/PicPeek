@@ -109,6 +109,35 @@ const Home: React.FC = () => {
             }}
           />
         </View>
+        <View style={styles.headingView}>
+          <Text style={styles.heading}>Downloads</Text>
+          <Text
+            style={[
+              styles.heading,
+              {fontWeight: '500', textDecorationLine: 'underline'},
+            ]}>
+            More
+          </Text>
+        </View>
+        <View style={styles.bottomlistView}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('MyPhotos');
+            }}>
+            <Image
+              source={require('../images/photo.png')}
+              style={[styles.typeIcon, {marginLeft: 10}]}
+            />
+            <Text>Photos</Text>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Image
+              source={require('../images/video.png')}
+              style={[styles.typeIcon, {marginLeft: 10}]}
+            />
+            <Text>Videos</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     </View>
   );
@@ -162,6 +191,11 @@ const styles = StyleSheet.create({
     color: '#9e9e9e',
     marginLeft: 15,
   },
+  typeIcon: {
+    width: 20,
+    height: 20,
+    tintColor: 'purple',
+  },
   tagline: {
     color: 'white',
     alignSelf: 'center',
@@ -182,5 +216,14 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: BLACK,
   },
-  listView: {marginBottom: 100},
+  listView: {marginBottom: 50},
+  bottomlistView: {
+    marginBottom: 30,
+    width: '90%',
+    alignSelf: 'center',
+    marginTop: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+  },
 });

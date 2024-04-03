@@ -10,6 +10,7 @@ import {
 import {useNavigation, useRoute} from '@react-navigation/native';
 import RNFS from 'react-native-fs';
 import Share from 'react-native-share';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {WHITE, THEME_COLOR} from '../utils/Colors';
 
 const ViewPhoto: React.FC = () => {
@@ -17,20 +18,29 @@ const ViewPhoto: React.FC = () => {
   const navigation = useNavigation();
   console.log('photo data', route.params.data);
 
-  const downloadFile = () => {
+  const downloadFile = async () => {
     const date = new Date().getTime();
-    console.log(date);
     const path = RNFS.DownloadDirectoryPath + '/img_' + date + '.jpg';
-    RNFS.downloadFile({
-      fromUrl: route.params.data.src.original,
-      toFile: path,
-    })
-      .promise.then(result => {
-        console.log('file downloaded successfully');
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    try {
+      await RNFS.downloadFile({
+        fromUrl: route.params.data.src.original,
+        toFile: path,
+      }).promise;
+
+      console.log('file downloaded successfully');
+
+      // Save the downloaded photo path to AsyncStorage
+      const existingPhotos = await AsyncStorage.getItem('downloadedPhotos');
+      const updatedPhotos = existingPhotos
+        ? JSON.parse(existingPhotos).concat(path)
+        : [path];
+      await AsyncStorage.setItem(
+        'downloadedPhotos',
+        JSON.stringify(updatedPhotos),
+      );
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (

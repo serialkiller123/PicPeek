@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import {View, Text, Image, TouchableOpacity, Dimensions} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
@@ -15,8 +16,7 @@ const VideoGrid = ({item}) => {
       }}>
       <TouchableOpacity
         activeOpacity={0.8}
-        style={{width: '90%', height: 
-        '90%', borderRadius: 10}}
+        style={{width: '90%', height: '90%', borderRadius: 10}}
         onPress={() => {
           navigation.navigate('ViewVideo', {data: item});
         }}>

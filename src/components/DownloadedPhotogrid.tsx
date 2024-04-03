@@ -3,7 +3,7 @@ import {View, Text, Image, TouchableOpacity, Dimensions} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import ImageLoad from 'react-native-image-placeholder';
-const PhotoGrid = ({item}) => {
+const DownloadedPhotoGrid = ({item}) => {
   const navigation = useNavigation();
   return (
     <View
@@ -25,7 +25,7 @@ const PhotoGrid = ({item}) => {
           navigation.navigate('ViewPhoto', {data: item});
         }}>
         <ImageLoad
-          source={{uri: item.src.original}}
+          source={{uri: `file://${item}`}}
           style={{width: '100%', height: '100%', borderRadius: 10}}
         />
       </TouchableOpacity>
@@ -33,4 +33,4 @@ const PhotoGrid = ({item}) => {
   );
 };
 
-export default PhotoGrid;
+export default DownloadedPhotoGrid;
