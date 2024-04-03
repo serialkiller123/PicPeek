@@ -22,7 +22,7 @@ const DownloadedPhotoGrid = ({item}) => {
           overflow: 'hidden',
         }}
         onPress={() => {
-          navigation.navigate('ViewPhoto', {data: item});
+          navigation.navigate('ViewDownloadedPhoto', {data: item});
         }}>
         <ImageLoad
           source={{uri: `file://${item}`}}

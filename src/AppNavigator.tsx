@@ -9,6 +9,7 @@ import Search from './screens/Search';
 import ViewPhoto from './screens/ViewPhoto';
 import ViewVideo from './screens/ViewVideo';
 import MyPhotos from './screens/MyPhotos';
+import ViewDownloadedPhoto from './screens/ViewDownloadedPhoto';
 const stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
 
@@ -80,6 +81,11 @@ const AppNavigator = () => {
         <stack.Screen
           name="MyPhotos"
           component={MyPhotos}
+          options={{headerShown: false}}
+        />
+        <stack.Screen
+          name="ViewDownloadedPhoto"
+          component={ViewDownloadedPhoto}
           options={{headerShown: false}}
         />
       </stack.Navigator>

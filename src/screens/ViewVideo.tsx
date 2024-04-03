@@ -12,7 +12,7 @@ import {BLACK, THEME_COLOR, WHITE} from '../utils/Colors';
 import Video from 'react-native-video';
 import Share from 'react-native-share';
 import Slider from '@react-native-community/slider';
-import RNFS from 'react-native-fs'
+import RNFS from 'react-native-fs';
 const ViewPhoto = () => {
   const route = useRoute();
   const navigation = useNavigation();
@@ -41,11 +41,11 @@ const ViewPhoto = () => {
     let secs = (Math.trunc(seconds) % 60).toString().padStart(2, '0');
     return `${mins}:${secs}`;
   };
- 
+
   const downloadFile = () => {
     const date = new Date().getTime();
     console.log(date);
-    const path = RNFS.DownloadDirectoryPath + '/video_'+date+".mp4";
+    const path = RNFS.DownloadDirectoryPath + '/video_' + date + '.mp4';
     RNFS.downloadFile({
       fromUrl: route.params.data.video_files[0].link,
       toFile: path,
@@ -70,28 +70,31 @@ const ViewPhoto = () => {
           <Image source={require('../images/back.png')} style={styles.icon} />
         </TouchableOpacity>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <TouchableOpacity style={styles.backBtn} onPress={()=>{
-            downloadFile()
-          }}>
+          <TouchableOpacity
+            style={styles.backBtn}
+            onPress={() => {
+              downloadFile();
+            }}>
             <Image
               source={require('../images/download.png')}
               style={styles.icon}
             />
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.backBtn, {marginLeft: 20}]}
-          onPress={()=>{
-            Share.open({
-              title: 'Video Share',
-              url: route.params.data.video_files[0].link,
-            })
-              .then(res => {
-                console.log(res);
+          <TouchableOpacity
+            style={[styles.backBtn, {marginLeft: 20}]}
+            onPress={() => {
+              Share.open({
+                title: 'Video Share',
+                url: route.params.data.video_files[0].link,
               })
-              .catch(err => {
-                err && console.log(err);
-              });
-          }}>
+                .then(res => {
+                  console.log(res);
+                })
+                .catch(err => {
+                  err && console.log(err);
+                });
+            }}>
             <Image
               source={require('../images/share.png')}
               style={styles.icon}
