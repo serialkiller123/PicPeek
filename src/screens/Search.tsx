@@ -39,7 +39,7 @@ const Search = () => {
   };
   return (
     <View style={styles.container}>
-      <StatusBar barStyle={'dark-content'} backgroundColor={THEME_COLOR} />
+      <StatusBar barStyle={'light-content'} backgroundColor={THEME_COLOR} />
       <TouchableOpacity
         style={styles.backBtn}
         onPress={() => {

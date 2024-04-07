@@ -45,7 +45,7 @@ const ViewPhoto: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle={'dark-content'} backgroundColor={THEME_COLOR} />
+      <StatusBar barStyle={'light-content'} backgroundColor={THEME_COLOR} />
       <Image
         source={{uri: route.params.data.src.original}}
         style={styles.photo}

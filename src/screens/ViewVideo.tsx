@@ -13,6 +13,7 @@ import Video from 'react-native-video';
 import Share from 'react-native-share';
 import Slider from '@react-native-community/slider';
 import RNFS from 'react-native-fs';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const ViewPhoto = () => {
   const route = useRoute();
   const navigation = useNavigation();
@@ -42,24 +43,35 @@ const ViewPhoto = () => {
     return `${mins}:${secs}`;
   };
 
-  const downloadFile = () => {
+  const downloadFile = async () => {
     const date = new Date().getTime();
     console.log(date);
     const path = RNFS.DownloadDirectoryPath + '/video_' + date + '.mp4';
-    RNFS.downloadFile({
-      fromUrl: route.params.data.video_files[0].link,
-      toFile: path,
-    })
-      .promise.then(result => {
-        console.log('file downloaded successfully');
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    try {
+      await RNFS.downloadFile({
+        fromUrl: route.params.data.video_files[0].link,
+        toFile: path,
+      }).promise;
+
+      console.log('file downloaded successfully');
+
+      // Save the downloaded video path to AsyncStorage
+      const existingVideos = await AsyncStorage.getItem('downloadedVideos');
+      const updatedVideos = existingVideos
+        ? JSON.parse(existingVideos).concat(path)
+        : [path];
+      await AsyncStorage.setItem(
+        'downloadedVideos',
+        JSON.stringify(updatedVideos),
+      );
+    } catch (err) {
+      console.log(err);
+    }
   };
+
   return (
     <View style={styles.container}>
-      <StatusBar barStyle={'dark-content'} backgroundColor={THEME_COLOR} />
+      <StatusBar barStyle={'light-content'} backgroundColor={BLACK} />
 
       <View style={styles.header}>
         <TouchableOpacity

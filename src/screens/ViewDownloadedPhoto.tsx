@@ -18,7 +18,7 @@ const ViewDownloadedPhoto: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle={'dark-content'} backgroundColor={THEME_COLOR} />
+      <StatusBar barStyle={'light-content'} backgroundColor={THEME_COLOR} />
       <Image
         source={{uri: `file://${route.params.data}`}}
         style={styles.photo}
@@ -32,17 +32,6 @@ const ViewDownloadedPhoto: React.FC = () => {
           <Image source={require('../images/back.png')} style={styles.icon} />
         </TouchableOpacity>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          {/* <TouchableOpacity
-            style={styles.backBtn}
-            onPress={() => {
-              downloadFile();
-            }}>
-            <Image
-              source={require('../images/download.png')}
-              style={styles.icon}
-            />
-          </TouchableOpacity> */}
-
           <TouchableOpacity
             style={[styles.backBtn, {marginLeft: 20}]}
             onPress={() => {

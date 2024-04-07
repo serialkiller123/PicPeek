@@ -14,6 +14,7 @@ import {NEW_PHOTOS, POPULAR_VIDEOS, getData} from '../utils/Apis';
 import PhotoItem from '../components/PhotoItem';
 import VideoItem from '../components/VideoItem';
 import {useNavigation} from '@react-navigation/native';
+import IonIcons from 'react-native-vector-icons/Ionicons';
 
 const Home: React.FC = () => {
   const [photos, setPhotos] = useState([]);
@@ -47,9 +48,25 @@ const Home: React.FC = () => {
         barStyle={'light-content'}
       />
       <View style={styles.topView}>
-        <Image source={require('../images/banner.jpg')} style={styles.banner} />
+        <Image
+          source={require('../images/banner2.jpg')}
+          style={styles.banner}
+        />
         <View style={styles.transLayout}>
-          <Text style={styles.logo}>PicPeek</Text>
+          <View style={styles.headingView}>
+            <Text style={styles.logo}>PicPeek</Text>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.toggleDrawer();
+              }}>
+              <IonIcons
+                style={styles.logo}
+                name="menu"
+                size={25}
+                color={WHITE}
+              />
+            </TouchableOpacity>
+          </View>
           <TouchableOpacity
             onPress={() => {
               navigation.navigate('Search');
@@ -69,13 +86,18 @@ const Home: React.FC = () => {
       <ScrollView>
         <View style={styles.headingView}>
           <Text style={styles.heading}>New Photos</Text>
-          <Text
-            style={[
-              styles.heading,
-              {fontWeight: '500', textDecorationLine: 'underline'},
-            ]}>
-            View All
-          </Text>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('AllPhotos');
+            }}>
+            <Text
+              style={[
+                styles.heading,
+                {fontWeight: '500', textDecorationLine: 'underline'},
+              ]}>
+              View All
+            </Text>
+          </TouchableOpacity>
         </View>
         <View>
           <FlatList
@@ -90,13 +112,18 @@ const Home: React.FC = () => {
         </View>
         <View style={styles.headingView}>
           <Text style={styles.heading}>New Videos</Text>
-          <Text
-            style={[
-              styles.heading,
-              {fontWeight: '500', textDecorationLine: 'underline'},
-            ]}>
-            View All
-          </Text>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('AllVideos');
+            }}>
+            <Text
+              style={[
+                styles.heading,
+                {fontWeight: '500', textDecorationLine: 'underline'},
+              ]}>
+              View All
+            </Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.listView}>
           <FlatList
@@ -111,13 +138,18 @@ const Home: React.FC = () => {
         </View>
         <View style={styles.headingView}>
           <Text style={styles.heading}>Downloads</Text>
-          <Text
-            style={[
-              styles.heading,
-              {fontWeight: '500', textDecorationLine: 'underline'},
-            ]}>
-            More
-          </Text>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.toggleDrawer();
+            }}>
+            <Text
+              style={[
+                styles.heading,
+                {fontWeight: '500', textDecorationLine: 'underline'},
+              ]}>
+              More
+            </Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.bottomlistView}>
           <TouchableOpacity
@@ -130,7 +162,10 @@ const Home: React.FC = () => {
             />
             <Text>Photos</Text>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('MyVideos');
+            }}>
             <Image
               source={require('../images/video.png')}
               style={[styles.typeIcon, {marginLeft: 10}]}
@@ -218,7 +253,7 @@ const styles = StyleSheet.create({
   },
   listView: {marginBottom: 50},
   bottomlistView: {
-    marginBottom: 30,
+    marginBottom: 10,
     width: '90%',
     alignSelf: 'center',
     marginTop: 20,
