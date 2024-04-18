@@ -101,7 +101,7 @@ const AppNavigator = () => {
               <IonIcons
                 name={focused ? 'home' : 'home-outline'}
                 size={size}
-                color={color}
+                color={'purple'}
               />
             ),
           }}

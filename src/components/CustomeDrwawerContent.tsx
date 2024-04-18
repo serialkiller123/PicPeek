@@ -31,9 +31,9 @@ const CustomDrawerContent = props => {
           label="Privacy Policy"
           onPress={() => Linking.openURL('https://mywebsite.com/help')}
           icon={({color, size}) => (
-            <Ionicons name="lock-closed" size={size} color={color} />
+            <Ionicons name="lock-closed" size={size} color={'purple'} />
           )}
-          labelStyle={{color: 'gray'}}
+          labelStyle={{color: 'white'}}
         />
       </DrawerContentScrollView>
       {/* Downloads Section */}
@@ -45,13 +45,15 @@ const CustomDrawerContent = props => {
             fontWeight: 'bold',
             marginTop: 20,
           }}>
+          <Ionicons name="download-outline" size={20} color={'white'} />
+          {'  '}
           Downloads
         </Text>
         <DrawerItem
           label="My Photos"
           onPress={() => navigation.navigate('MyPhotos')}
           icon={({color, size}) => (
-            <Ionicons name="images-outline" size={size} color={color} />
+            <Ionicons name="images-outline" size={size} color={'purple'} />
           )}
           labelStyle={{color: 'white'}}
         />
@@ -59,7 +61,7 @@ const CustomDrawerContent = props => {
           label="My Videos"
           onPress={() => navigation.navigate('MyVideos')}
           icon={({color, size}) => (
-            <Ionicons name="videocam-outline" size={size} color={color} />
+            <Ionicons name="videocam-outline" size={size} color={'purple'} />
           )}
           labelStyle={{color: 'white'}}
         />
@@ -67,7 +69,7 @@ const CustomDrawerContent = props => {
 
       <View style={{paddingHorizontal: 20, paddingBottom: 20}}>
         <Text style={{color: 'grey'}}>Version 1.0</Text>
-        <Text style={{color: 'grey'}}>Developed by : Serial Tech</Text>
+        <Text style={{color: 'grey'}}>Developed by : SerialTechLab</Text>
       </View>
     </View>
   );

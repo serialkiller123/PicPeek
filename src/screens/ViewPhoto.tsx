@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,8 @@ import {
   StatusBar,
   Image,
   TouchableOpacity,
+  ToastAndroid,
+  ActivityIndicator,
 } from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import RNFS from 'react-native-fs';
@@ -16,9 +18,11 @@ import {WHITE, THEME_COLOR} from '../utils/Colors';
 const ViewPhoto: React.FC = () => {
   const route: any = useRoute();
   const navigation = useNavigation();
+  const [downloading, setDownloading] = useState(false);
   console.log('photo data', route.params.data);
 
   const downloadFile = async () => {
+    setDownloading(true);
     const date = new Date().getTime();
     const path = RNFS.DownloadDirectoryPath + '/img_' + date + '.jpg';
     try {
@@ -28,6 +32,7 @@ const ViewPhoto: React.FC = () => {
       }).promise;
 
       console.log('file downloaded successfully');
+      ToastAndroid.show('Download completed', ToastAndroid.SHORT);
 
       // Save the downloaded photo path to AsyncStorage
       const existingPhotos = await AsyncStorage.getItem('downloadedPhotos');
@@ -40,6 +45,8 @@ const ViewPhoto: React.FC = () => {
       );
     } catch (err) {
       console.log(err);
+    } finally {
+      setDownloading(false);
     }
   };
 
@@ -59,16 +66,20 @@ const ViewPhoto: React.FC = () => {
           <Image source={require('../images/back.png')} style={styles.icon} />
         </TouchableOpacity>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <TouchableOpacity
-            style={styles.backBtn}
-            onPress={() => {
-              downloadFile();
-            }}>
-            <Image
-              source={require('../images/download.png')}
-              style={styles.icon}
-            />
-          </TouchableOpacity>
+          {downloading ? (
+            <ActivityIndicator size="large" color={THEME_COLOR} />
+          ) : (
+            <TouchableOpacity
+              style={styles.backBtn}
+              onPress={() => {
+                downloadFile();
+              }}>
+              <Image
+                source={require('../images/download.png')}
+                style={styles.icon}
+              />
+            </TouchableOpacity>
+          )}
 
           <TouchableOpacity
             style={[styles.backBtn, {marginLeft: 20}]}

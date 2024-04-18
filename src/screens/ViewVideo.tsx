@@ -5,8 +5,12 @@ import {
   StatusBar,
   Image,
   TouchableOpacity,
+  Dimensions,
+  Platform,
+  ToastAndroid,
+  ActivityIndicator,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {BLACK, THEME_COLOR, WHITE} from '../utils/Colors';
 import Video from 'react-native-video';
@@ -14,13 +18,19 @@ import Share from 'react-native-share';
 import Slider from '@react-native-community/slider';
 import RNFS from 'react-native-fs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const ViewPhoto = () => {
+import VideoPlayer from 'react-native-video-player';
+
+const width = Dimensions.get('window').width;
+const height = Dimensions.get('window').height;
+
+const ViewVideo = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const [isClicked, setIsClicked] = useState(false);
   const [paused, setPaused] = useState(false);
   console.log('photo data', route.params.data);
   const [progress, setProgress] = useState(null);
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', e => {
@@ -28,6 +38,7 @@ const ViewPhoto = () => {
     });
     return () => unsubscribe();
   }, []);
+
   useEffect(() => {
     if (isClicked) {
       setTimeout(() => {
@@ -35,6 +46,7 @@ const ViewPhoto = () => {
       }, 5000);
     }
   }, [isClicked]);
+
   const format = seconds => {
     let mins = parseInt(seconds / 60)
       .toString()
@@ -44,6 +56,7 @@ const ViewPhoto = () => {
   };
 
   const downloadFile = async () => {
+    setDownloading(true);
     const date = new Date().getTime();
     console.log(date);
     const path = RNFS.DownloadDirectoryPath + '/video_' + date + '.mp4';
@@ -54,6 +67,8 @@ const ViewPhoto = () => {
       }).promise;
 
       console.log('file downloaded successfully');
+
+      ToastAndroid.show('Download completed', ToastAndroid.SHORT);
 
       // Save the downloaded video path to AsyncStorage
       const existingVideos = await AsyncStorage.getItem('downloadedVideos');
@@ -66,6 +81,8 @@ const ViewPhoto = () => {
       );
     } catch (err) {
       console.log(err);
+    } finally {
+      setDownloading(false);
     }
   };
 
@@ -82,16 +99,20 @@ const ViewPhoto = () => {
           <Image source={require('../images/back.png')} style={styles.icon} />
         </TouchableOpacity>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <TouchableOpacity
-            style={styles.backBtn}
-            onPress={() => {
-              downloadFile();
-            }}>
-            <Image
-              source={require('../images/download.png')}
-              style={styles.icon}
-            />
-          </TouchableOpacity>
+          {downloading ? (
+            <ActivityIndicator size="large" color={THEME_COLOR} />
+          ) : (
+            <TouchableOpacity
+              style={styles.backBtn}
+              onPress={() => {
+                downloadFile();
+              }}>
+              <Image
+                source={require('../images/download.png')}
+                style={styles.icon}
+              />
+            </TouchableOpacity>
+          )}
 
           <TouchableOpacity
             style={[styles.backBtn, {marginLeft: 20}]}
@@ -114,69 +135,17 @@ const ViewPhoto = () => {
           </TouchableOpacity>
         </View>
       </View>
-      <TouchableOpacity
-        activeOpacity={1}
-        style={styles.videoView}
-        onPress={() => {
-          setIsClicked(true);
-        }}>
-        <Video
-          resizeMode="cover"
-          paused={paused}
-          source={{uri: route.params.data.video_files[0].link}}
-          style={styles.video}
-          onProgress={x => {
-            console.log(x);
-            setProgress(x);
-            if (x.currentTime === x.seekableDuration) {
-              setPaused(true);
-            }
-          }}
+      <View style={styles.videoView}>
+        <VideoPlayer
+          video={{uri: route.params.data.video_files[0].link}}
+          // videoWidth={'100%'}
+          // videoHeight={200}
+          autoplay={true}
+          showDuration
+          fullScreenOnLongPress
+          thumbnail={{uri: route.params.data.video_files[0].link}}
         />
-        {isClicked && (
-          <TouchableOpacity
-            style={[
-              styles.videoView,
-              {
-                backgroundColor: 'rgba(0,0,0,.5)',
-                justifyContent: 'center',
-                alignItems: 'center',
-                position: 'absolute',
-              },
-            ]}>
-            <TouchableOpacity
-              onPress={() => {
-                setPaused(!paused);
-              }}>
-              <Image
-                source={
-                  paused
-                    ? require('../images/play-button.png')
-                    : require('../images/pause-button.png')
-                }
-                style={styles.playBtn}
-              />
-            </TouchableOpacity>
-            <View style={styles.sliderView}>
-              <Text style={styles.time}>
-                {progress ? format(progress.currentTime) : 0}
-              </Text>
-              <Slider
-                style={styles.slider}
-                minimumValue={0}
-                value={progress.currentTime}
-                maximumValue={progress.seekableDuration}
-                minimumTrackTintColor="#FFFFFF"
-                maximumTrackTintColor="#9e9e9e"
-              />
-              <Text style={styles.time}>
-                {' '}
-                {progress ? format(progress.seekableDuration) : 0}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        )}
-      </TouchableOpacity>
+      </View>
       <Text style={styles.photographer}>
         {'Photographer: ' + route.params.data.user.name}
       </Text>
@@ -184,7 +153,7 @@ const ViewPhoto = () => {
   );
 };
 
-export default ViewPhoto;
+export default ViewVideo;
 const styles = StyleSheet.create({
   container: {
     flex: 1,

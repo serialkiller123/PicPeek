@@ -14,6 +14,7 @@ import {WHITE, THEME_COLOR} from '../utils/Colors';
 import {NEW_PHOTOS, POPULAR_VIDEOS, getData} from '../utils/Apis';
 import PhotoGrid from '../components/PhotoGrid';
 import VideoGrid from '../components/VideoGrid';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const AllVideos: React.FC = () => {
   const [videos, setVideos] = useState([]);
@@ -47,7 +48,7 @@ const AllVideos: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <StatusBar barStyle={'dark-content'} backgroundColor={WHITE} />
       <View style={styles.headingView}>
         <TouchableOpacity
@@ -77,7 +78,7 @@ const AllVideos: React.FC = () => {
           }
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -91,7 +92,7 @@ const styles = StyleSheet.create({
   headingView: {
     width: '90%',
     alignSelf: 'center',
-    marginTop: 20,
+    // marginTop: 20,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',

@@ -13,6 +13,7 @@ import {useNavigation} from '@react-navigation/native';
 import {WHITE, THEME_COLOR} from '../utils/Colors';
 import {NEW_PHOTOS, getData} from '../utils/Apis';
 import PhotoGrid from '../components/PhotoGrid';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const AllPhotos: React.FC = () => {
   const [photos, setPhotos] = useState([]);
@@ -46,7 +47,7 @@ const AllPhotos: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <StatusBar barStyle={'dark-content'} backgroundColor={WHITE} />
       <View style={styles.headingView}>
         <TouchableOpacity
@@ -76,7 +77,7 @@ const AllPhotos: React.FC = () => {
           }
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -90,7 +91,7 @@ const styles = StyleSheet.create({
   headingView: {
     width: '90%',
     alignSelf: 'center',
-    marginTop: 20,
+    // marginTop: 20,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',

@@ -160,7 +160,7 @@ const Home: React.FC = () => {
               source={require('../images/photo.png')}
               style={[styles.typeIcon, {marginLeft: 10}]}
             />
-            <Text>Photos</Text>
+            <Text style={{color: 'gray'}}>Photos</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
@@ -170,7 +170,7 @@ const Home: React.FC = () => {
               source={require('../images/video.png')}
               style={[styles.typeIcon, {marginLeft: 10}]}
             />
-            <Text>Videos</Text>
+            <Text style={{color: 'gray'}}>Videos</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

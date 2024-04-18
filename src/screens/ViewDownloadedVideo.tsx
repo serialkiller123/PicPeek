@@ -16,7 +16,9 @@ import Share from 'react-native-share';
 import Slider from '@react-native-community/slider';
 import RNFS from 'react-native-fs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const ViewDownloadedPhoto = () => {
+import VideoPlayer from 'react-native-video-player';
+
+const ViewDownloadedVideo = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const [isClicked, setIsClicked] = useState(false);
@@ -84,17 +86,6 @@ const ViewDownloadedPhoto = () => {
           <Image source={require('../images/back.png')} style={styles.icon} />
         </TouchableOpacity>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          {/* <TouchableOpacity
-            style={styles.backBtn}
-            onPress={() => {
-              downloadFile();
-            }}>
-            <Image
-              source={require('../images/download.png')}
-              style={styles.icon}
-            />
-          </TouchableOpacity> */}
-
           <TouchableOpacity
             style={[styles.backBtn, {marginLeft: 20}]}
             onPress={() => {
@@ -116,77 +107,22 @@ const ViewDownloadedPhoto = () => {
           </TouchableOpacity>
         </View>
       </View>
-      <TouchableOpacity
-        activeOpacity={1}
-        style={styles.videoView}
-        onPress={() => {
-          setIsClicked(true);
-        }}>
-        <Video
-          resizeMode="cover"
-          paused={paused}
-          source={{uri: route.params.data}}
-          style={styles.video}
-          onProgress={x => {
-            console.log(x);
-            setProgress(x);
-            if (x.currentTime === x.seekableDuration) {
-              setPaused(true);
-            }
-          }}
+      <View style={styles.videoView}>
+        <VideoPlayer
+          video={{uri: `file://${route.params.data}`}}
+          autoplay={true}
+          // videoWidth={'100%'}
+          // videoHeight={200}
+          showDuration
+          fullScreenOnLongPress
+          thumbnail={{uri: `file://${route.params.data}`}}
         />
-        {isClicked && (
-          <TouchableOpacity
-            style={[
-              styles.videoView,
-              {
-                backgroundColor: 'rgba(0,0,0,.5)',
-                justifyContent: 'center',
-                alignItems: 'center',
-                position: 'absolute',
-              },
-            ]}>
-            <TouchableOpacity
-              onPress={() => {
-                setPaused(!paused);
-              }}>
-              <Image
-                source={
-                  paused
-                    ? require('../images/play-button.png')
-                    : require('../images/pause-button.png')
-                }
-                style={styles.playBtn}
-              />
-            </TouchableOpacity>
-            <View style={styles.sliderView}>
-              <Text style={styles.time}>
-                {progress ? format(progress.currentTime) : 0}
-              </Text>
-              <Slider
-                style={styles.slider}
-                minimumValue={0}
-                value={progress.currentTime}
-                maximumValue={progress.seekableDuration}
-                minimumTrackTintColor="#FFFFFF"
-                maximumTrackTintColor="#9e9e9e"
-              />
-              <Text style={styles.time}>
-                {' '}
-                {progress ? format(progress.seekableDuration) : 0}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        )}
-      </TouchableOpacity>
-      {/* <Text style={styles.photographer}>
-        {'Photographer: ' + route.params.data}
-      </Text> */}
+      </View>
     </View>
   );
 };
 
-export default ViewDownloadedPhoto;
+export default ViewDownloadedVideo;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
