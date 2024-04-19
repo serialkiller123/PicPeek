@@ -14,6 +14,11 @@ import {WHITE, THEME_COLOR} from '../utils/Colors';
 import {NEW_PHOTOS, getData} from '../utils/Apis';
 import PhotoGrid from '../components/PhotoGrid';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
+
+const adUnitId = __DEV__
+  ? TestIds.ADAPTIVE_BANNER
+  : 'ca-app-pub-1666861944997422/6007605538';
 
 const AllPhotos: React.FC = () => {
   const [photos, setPhotos] = useState([]);
@@ -77,6 +82,10 @@ const AllPhotos: React.FC = () => {
           }
         />
       </View>
+      <BannerAd
+        unitId={adUnitId}
+        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+      />
     </SafeAreaView>
   );
 };

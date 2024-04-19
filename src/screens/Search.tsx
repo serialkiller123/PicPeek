@@ -16,6 +16,12 @@ import Modal from 'react-native-modal';
 import {SEARCH_PHOTOS, SEARCH_VIDEOS, searchData} from '../utils/Apis';
 import PhotoGrid from '../components/PhotoGrid';
 import VideoGrid from '../components/VideoGrid';
+import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
+
+const adUnitId = __DEV__
+  ? TestIds.ADAPTIVE_BANNER
+  : 'ca-app-pub-1666861944997422/5568621832';
+
 const Search = () => {
   const navigation = useNavigation();
   const [type, setType] = useState(0);
@@ -113,6 +119,10 @@ const Search = () => {
           }}
         />
       )}
+      <BannerAd
+        unitId={adUnitId}
+        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+      />
       <Modal
         onBackdropPress={() => {
           setShowTypeModal(false);

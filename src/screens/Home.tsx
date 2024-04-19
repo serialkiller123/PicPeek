@@ -15,6 +15,11 @@ import PhotoItem from '../components/PhotoItem';
 import VideoItem from '../components/VideoItem';
 import {useNavigation} from '@react-navigation/native';
 import IonIcons from 'react-native-vector-icons/Ionicons';
+import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
+
+const adUnitId = __DEV__
+  ? TestIds.ADAPTIVE_BANNER
+  : 'ca-app-pub-1666861944997422/9152643628';
 
 const Home: React.FC = () => {
   const [photos, setPhotos] = useState([]);
@@ -174,6 +179,10 @@ const Home: React.FC = () => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+      <BannerAd
+        unitId={adUnitId}
+        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+      />
     </View>
   );
 };

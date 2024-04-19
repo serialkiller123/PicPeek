@@ -1,4 +1,7 @@
 {
   "name": "PicPeek",
-  "displayName": "PicPeek"
+  "displayName": "PicPeek",
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-1666861944997422~2676733178"
+  }
 }

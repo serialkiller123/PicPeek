@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -14,12 +14,41 @@ import RNFS from 'react-native-fs';
 import Share from 'react-native-share';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {WHITE, THEME_COLOR} from '../utils/Colors';
+import {
+  InterstitialAd,
+  AdEventType,
+  TestIds,
+} from 'react-native-google-mobile-ads';
+
+const adUnitId = __DEV__
+  ? TestIds.INTERSTITIAL
+  : 'ca-app-pub-1666861944997422/3320565158';
+
+const interstitial = InterstitialAd.createForAdRequest(adUnitId, {
+  keywords: ['games', 'fashion', 'clothing'],
+});
 
 const ViewPhoto: React.FC = () => {
   const route: any = useRoute();
   const navigation = useNavigation();
   const [downloading, setDownloading] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   console.log('photo data', route.params.data);
+
+  useEffect(() => {
+    const unsubscribe = interstitial.addAdEventListener(
+      AdEventType.LOADED,
+      () => {
+        setLoaded(true);
+      },
+    );
+
+    // Start loading the interstitial straight away
+    interstitial.load();
+
+    // Unsubscribe from events on unmount
+    return unsubscribe;
+  }, []);
 
   const downloadFile = async () => {
     setDownloading(true);
@@ -32,8 +61,9 @@ const ViewPhoto: React.FC = () => {
       }).promise;
 
       console.log('file downloaded successfully');
-      ToastAndroid.show('Download completed', ToastAndroid.SHORT);
 
+      ToastAndroid.show('Download completed', ToastAndroid.SHORT);
+      interstitial.show();
       // Save the downloaded photo path to AsyncStorage
       const existingPhotos = await AsyncStorage.getItem('downloadedPhotos');
       const updatedPhotos = existingPhotos

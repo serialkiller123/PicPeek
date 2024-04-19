@@ -15,6 +15,11 @@ import {NEW_PHOTOS, POPULAR_VIDEOS, getData} from '../utils/Apis';
 import PhotoGrid from '../components/PhotoGrid';
 import VideoGrid from '../components/VideoGrid';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
+
+const adUnitId = __DEV__
+  ? TestIds.ADAPTIVE_BANNER
+  : 'ca-app-pub-1666861944997422/2199055174';
 
 const AllVideos: React.FC = () => {
   const [videos, setVideos] = useState([]);
@@ -78,6 +83,10 @@ const AllVideos: React.FC = () => {
           }
         />
       </View>
+      <BannerAd
+        unitId={adUnitId}
+        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+      />
     </SafeAreaView>
   );
 };

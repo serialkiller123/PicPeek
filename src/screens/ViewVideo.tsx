@@ -19,6 +19,19 @@ import Slider from '@react-native-community/slider';
 import RNFS from 'react-native-fs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import VideoPlayer from 'react-native-video-player';
+import {
+  InterstitialAd,
+  AdEventType,
+  TestIds,
+} from 'react-native-google-mobile-ads';
+
+const adUnitId = __DEV__
+  ? TestIds.INTERSTITIAL
+  : 'ca-app-pub-1666861944997422/6115416743';
+
+const interstitial = InterstitialAd.createForAdRequest(adUnitId, {
+  keywords: ['games', 'fashion', 'clothing'],
+});
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
@@ -31,6 +44,22 @@ const ViewVideo = () => {
   console.log('photo data', route.params.data);
   const [progress, setProgress] = useState(null);
   const [downloading, setDownloading] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = interstitial.addAdEventListener(
+      AdEventType.LOADED,
+      () => {
+        setLoaded(true);
+      },
+    );
+
+    // Start loading the interstitial straight away
+    interstitial.load();
+
+    // Unsubscribe from events on unmount
+    return unsubscribe;
+  }, []);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', e => {
@@ -69,7 +98,7 @@ const ViewVideo = () => {
       console.log('file downloaded successfully');
 
       ToastAndroid.show('Download completed', ToastAndroid.SHORT);
-
+      interstitial.show();
       // Save the downloaded video path to AsyncStorage
       const existingVideos = await AsyncStorage.getItem('downloadedVideos');
       const updatedVideos = existingVideos
