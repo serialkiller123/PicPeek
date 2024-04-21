@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable react-native/no-inline-styles */
 import {View, Text, Image, TouchableOpacity, Dimensions} from 'react-native';
 import React from 'react';
@@ -22,7 +23,9 @@ const DownloadedPhotoGrid = ({item}) => {
           overflow: 'hidden',
         }}
         onPress={() => {
-          navigation.navigate('ViewDownloadedPhoto', {data: item});
+          navigation.navigate('ViewDownloadedPhoto', {
+            data: item,
+          });
         }}>
         <ImageLoad
           source={{uri: `file://${item}`}}

@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import {
   View,
@@ -8,6 +9,8 @@ import {
   FlatList,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
+  Dimensions,
 } from 'react-native';
 import {BLACK, WHITE} from '../utils/Colors';
 import {NEW_PHOTOS, POPULAR_VIDEOS, getData} from '../utils/Apis';
@@ -16,11 +19,31 @@ import VideoItem from '../components/VideoItem';
 import {useNavigation} from '@react-navigation/native';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const adUnitId = __DEV__
   ? TestIds.ADAPTIVE_BANNER
   : 'ca-app-pub-1666861944997422/9152643628';
 
+const LoadingSkeleton = () => {
+  return (
+    <View style={{flexDirection: 'row', marginTop: 20}}>
+      {[1, 2, 3].map((_, index) => (
+        <View
+          key={index}
+          style={{
+            width: 300,
+            height: 200,
+            borderRadius: 10,
+            marginLeft: 20,
+            backgroundColor: '#f0f0f0',
+          }}
+        />
+      ))}
+    </View>
+  );
+};
 const Home: React.FC = () => {
   const [photos, setPhotos] = useState([]);
   const [videos, setVideos] = useState([]);
@@ -95,25 +118,36 @@ const Home: React.FC = () => {
             onPress={() => {
               navigation.navigate('AllPhotos');
             }}>
-            <Text
-              style={[
-                styles.heading,
-                {fontWeight: '500', textDecorationLine: 'underline'},
-              ]}>
-              View All
-            </Text>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Text
+                style={[
+                  styles.heading,
+                  {
+                    fontWeight: '500',
+                    textDecorationLine: 'underline',
+                    marginRight: 5,
+                  },
+                ]}>
+                All Photos
+              </Text>
+              <FontAwesome name="angle-double-right" size={18} color="black" />
+            </View>
           </TouchableOpacity>
         </View>
         <View>
-          <FlatList
-            data={photos}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{marginTop: 20}}
-            renderItem={({item, index}) => {
-              return <PhotoItem item={item} />;
-            }}
-          />
+          {photos.length > 0 ? (
+            <FlatList
+              data={photos}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{marginTop: 20}}
+              renderItem={({item, index}) => {
+                return <PhotoItem item={item} />;
+              }}
+            />
+          ) : (
+            <LoadingSkeleton />
+          )}
         </View>
         <View style={styles.headingView}>
           <Text style={styles.heading}>New Videos</Text>
@@ -121,25 +155,36 @@ const Home: React.FC = () => {
             onPress={() => {
               navigation.navigate('AllVideos');
             }}>
-            <Text
-              style={[
-                styles.heading,
-                {fontWeight: '500', textDecorationLine: 'underline'},
-              ]}>
-              View All
-            </Text>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Text
+                style={[
+                  styles.heading,
+                  {
+                    fontWeight: '500',
+                    textDecorationLine: 'underline',
+                    marginRight: 5,
+                  },
+                ]}>
+                All Videos
+              </Text>
+              <FontAwesome name="angle-double-right" size={18} color="black" />
+            </View>
           </TouchableOpacity>
         </View>
         <View style={styles.listView}>
-          <FlatList
-            data={videos}
-            contentContainerStyle={{marginTop: 20}}
-            showsHorizontalScrollIndicator={false}
-            horizontal
-            renderItem={({item, index}) => {
-              return <VideoItem item={item} />;
-            }}
-          />
+          {videos.length > 0 ? (
+            <FlatList
+              data={videos}
+              contentContainerStyle={{marginTop: 20}}
+              showsHorizontalScrollIndicator={false}
+              horizontal
+              renderItem={({item, index}) => {
+                return <VideoItem item={item} />;
+              }}
+            />
+          ) : (
+            <LoadingSkeleton />
+          )}
         </View>
         <View style={styles.headingView}>
           <Text style={styles.heading}>Downloads</Text>
@@ -158,24 +203,20 @@ const Home: React.FC = () => {
         </View>
         <View style={styles.bottomlistView}>
           <TouchableOpacity
+            style={[styles.DButtons, {backgroundColor: 'indigo'}]}
             onPress={() => {
               navigation.navigate('MyPhotos');
             }}>
-            <Image
-              source={require('../images/photo.png')}
-              style={[styles.typeIcon, {marginLeft: 10}]}
-            />
-            <Text style={{color: 'gray'}}>Photos</Text>
+            <Ionicons name="images-outline" size={26} color={'white'} />
+            <Text style={{color: 'white'}}>Photos</Text>
           </TouchableOpacity>
           <TouchableOpacity
+            style={[styles.DButtons, {backgroundColor: 'purple'}]}
             onPress={() => {
               navigation.navigate('MyVideos');
             }}>
-            <Image
-              source={require('../images/video.png')}
-              style={[styles.typeIcon, {marginLeft: 10}]}
-            />
-            <Text style={{color: 'gray'}}>Videos</Text>
+            <Ionicons name="play-circle-outline" size={26} color={'white'} />
+            <Text style={{color: 'white'}}>Videos</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -256,18 +297,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   heading: {
-    fontSize: 20,
+    fontSize: 15,
     fontWeight: '700',
     color: BLACK,
   },
-  listView: {marginBottom: 50},
+  listView: {marginBottom: 20},
   bottomlistView: {
     marginBottom: 10,
     width: '90%',
     alignSelf: 'center',
     marginTop: 20,
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'center',
     alignItems: 'center',
+  },
+  DButtons: {
+    flex: 1,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: 5,
+    // backgroundColor: 'yellow',
+    paddingVertical: 15,
   },
 });

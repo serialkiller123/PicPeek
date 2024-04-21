@@ -7,6 +7,8 @@ import {
   StatusBar,
   Image,
   TouchableOpacity,
+  ToastAndroid,
+  Alert,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -17,6 +19,7 @@ import Slider from '@react-native-community/slider';
 import RNFS from 'react-native-fs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import VideoPlayer from 'react-native-video-player';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const ViewDownloadedVideo = () => {
   const route = useRoute();
@@ -47,27 +50,49 @@ const ViewDownloadedVideo = () => {
     return `${mins}:${secs}`;
   };
 
-  const downloadFile = async () => {
-    const date = new Date().getTime();
-    console.log(date);
-    const path = RNFS.DownloadDirectoryPath + '/video_' + date + '.mp4';
+  const deleteDownloadedFile = async filePath => {
     try {
-      await RNFS.downloadFile({
-        fromUrl: route.params.data.video_files[0].link,
-        toFile: path,
-      }).promise;
+      // Show confirmation prompt
+      const confirmed = await new Promise(resolve => {
+        Alert.alert(
+          'Confirm Deletion',
+          'Are you sure you want to delete this video?',
+          [
+            {
+              text: 'Cancel',
+              onPress: () => resolve(false),
+              style: 'cancel',
+            },
+            {
+              text: 'Delete',
+              onPress: () => resolve(true),
+            },
+          ],
+          {cancelable: false},
+        );
+      });
 
-      console.log('file downloaded successfully');
+      // If confirmed, proceed with deletion
+      if (confirmed) {
+        // Delete the file
+        await RNFS.unlink(filePath);
+        console.log('File deleted successfully');
 
-      // Save the downloaded video path to AsyncStorage
-      const existingVideos = await AsyncStorage.getItem('downloadedVideos');
-      const updatedVideos = existingVideos
-        ? JSON.parse(existingVideos).concat(path)
-        : [path];
-      await AsyncStorage.setItem(
-        'downloadedVideos',
-        JSON.stringify(updatedVideos),
-      );
+        // Remove the path from AsyncStorage
+        const existingVideos = await AsyncStorage.getItem('downloadedVideos');
+        if (existingVideos) {
+          const updatedVideos = JSON.parse(existingVideos).filter(
+            photoPath => photoPath !== filePath,
+          );
+          await AsyncStorage.setItem(
+            'downloadedVideos',
+            JSON.stringify(updatedVideos),
+          );
+          console.log('Path removed from AsyncStorage');
+          ToastAndroid.show('Video deleted!', ToastAndroid.SHORT);
+          navigation.goBack();
+        }
+      }
     } catch (err) {
       console.log(err);
     }
@@ -86,6 +111,13 @@ const ViewDownloadedVideo = () => {
           <Image source={require('../images/back.png')} style={styles.icon} />
         </TouchableOpacity>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <TouchableOpacity
+            style={[styles.backBtn, {marginLeft: 20}]}
+            onPress={() => {
+              deleteDownloadedFile(route.params.data);
+            }}>
+            <Ionicons name="trash" size={24} color={'black'} />
+          </TouchableOpacity>
           <TouchableOpacity
             style={[styles.backBtn, {marginLeft: 20}]}
             onPress={() => {

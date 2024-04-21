@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   View,
   Text,
@@ -9,8 +10,12 @@ import {
   FlatList,
   Keyboard,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {BLACK, THEME_COLOR, WHITE} from '../utils/Colors';
 import Modal from 'react-native-modal';
@@ -18,29 +23,42 @@ import PhotoGrid from '../components/PhotoGrid';
 import DownloadedPhotoGrid from '../components/DownloadedPhotogrid';
 import checkMediaPermissions from '../utils/permisions';
 import DownloadedVideoGrid from '../components/DownloadedVideoGrid';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
+
+const adUnitId = __DEV__
+  ? TestIds.ADAPTIVE_BANNER
+  : 'ca-app-pub-1666861944997422/8178140160';
+
 const MyVideos = () => {
   const navigation = useNavigation();
   const [showTypeModal, setShowTypeModal] = useState(false);
   const [downloadedVideos, setDownloadedVideos] = useState([]);
 
+  const getDownloadedVideos = async () => {
+    try {
+      const videos = await AsyncStorage.getItem('downloadedVideos');
+      if (videos) {
+        setDownloadedVideos(JSON.parse(videos));
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     checkMediaPermissions();
-    const getDownloadedVideos = async () => {
-      try {
-        const videos = await AsyncStorage.getItem('downloadedVideos');
-        if (videos) {
-          setDownloadedVideos(JSON.parse(videos));
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
     getDownloadedVideos();
   }, []);
 
+  useFocusEffect(
+    useCallback(() => {
+      getDownloadedVideos();
+    }, []),
+  );
+
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <StatusBar barStyle={'dark-content'} backgroundColor={WHITE} />
       <View style={styles.headingView}>
         <TouchableOpacity
@@ -54,16 +72,24 @@ const MyVideos = () => {
           Downloaded Videos
         </Text>
       </View>
-      <View>
-        <FlatList
-          numColumns={2}
-          data={downloadedVideos}
-          renderItem={({item, index}) => {
-            return <DownloadedVideoGrid item={item} />;
-          }}
-        />
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        {downloadedVideos.length > 0 ? (
+          <FlatList
+            numColumns={2}
+            data={downloadedVideos}
+            renderItem={({item, index}) => {
+              return <DownloadedVideoGrid item={item} />;
+            }}
+          />
+        ) : (
+          <Text style={{color: 'grey'}}>No downloads available</Text>
+        )}
       </View>
-    </View>
+      <BannerAd
+        unitId={adUnitId}
+        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+      />
+    </SafeAreaView>
   );
 };
 
@@ -83,7 +109,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     height: 60,
     position: 'absolute',
-    marginTop: 40,
     flexDirection: 'row',
     paddingLeft: 15,
     paddingRight: 15,
@@ -95,14 +120,13 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 55,
     marginLeft: 15,
   },
   headingView: {
     width: '90%',
     alignSelf: 'center',
-    marginTop: 20,
     flexDirection: 'row',
+    marginTop: 10,
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
@@ -110,7 +134,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '700',
     color: BLACK,
-    marginTop: 55,
     marginLeft: 15,
   },
   icon: {

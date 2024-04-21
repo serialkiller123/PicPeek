@@ -15,6 +15,8 @@ import {
   Text,
   useColorScheme,
   View,
+  Alert,
+  Linking,
 } from 'react-native';
 
 import {
@@ -27,6 +29,37 @@ import {
 import mobileAds from 'react-native-google-mobile-ads';
 import {AppOpenAd, TestIds, AdEventType} from 'react-native-google-mobile-ads';
 import AppNavigator from './src/AppNavigator';
+import DeviceInfo from 'react-native-device-info';
+import {doc, getDoc} from 'firebase/firestore';
+import {db} from './Firebase';
+
+const checkForUpdate = async () => {
+  const currentVersion = DeviceInfo.getVersion();
+  const docRef = doc(db, 'settings', 'appVersion');
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    const latestVersion = docSnap.data().version;
+
+    if (currentVersion < latestVersion) {
+      Alert.alert(
+        'Update Available',
+        'A new version of the app is available. Please update to continue using the latest features.',
+        [
+          {
+            text: 'Update Now',
+            onPress: () =>
+              Linking.openURL(
+                'https://play.google.com/store/apps/details?id=com.picpeek',
+              ),
+          },
+          {text: 'Later', style: 'cancel'},
+        ],
+        {cancelable: false},
+      );
+    }
+  }
+};
 
 mobileAds()
   .initialize()
@@ -66,6 +99,10 @@ function App(): React.JSX.Element {
       eventListener();
       appOpenAd.removeAllListeners();
     };
+  }, []);
+
+  useEffect(() => {
+    checkForUpdate();
   }, []);
 
   const backgroundStyle = {

@@ -9,6 +9,9 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import {THEME_COLOR, WHITE} from '../utils/Colors';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import DeviceInfo from 'react-native-device-info';
+
+const appVersion = DeviceInfo.getVersion();
 
 const CustomDrawerContent = props => {
   const navigation = useNavigation();
@@ -29,7 +32,9 @@ const CustomDrawerContent = props => {
         <DrawerItemList {...props} />
         <DrawerItem
           label="Privacy Policy"
-          onPress={() => Linking.openURL('https://mywebsite.com/help')}
+          onPress={() =>
+            Linking.openURL('https://sites.google.com/view/picpeek/home')
+          }
           icon={({color, size}) => (
             <Ionicons name="lock-closed" size={size} color={'purple'} />
           )}
@@ -67,9 +72,17 @@ const CustomDrawerContent = props => {
         />
       </View>
 
-      <View style={{paddingHorizontal: 20, paddingBottom: 20}}>
-        <Text style={{color: 'grey'}}>Version 1.0</Text>
-        <Text style={{color: 'grey'}}>Developed by : SerialTechLab</Text>
+      <View
+        style={{
+          paddingHorizontal: 20,
+          paddingBottom: 20,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+        }}>
+        <Text style={{color: 'grey', fontSize: 9}}>
+          Developed by : SerialTechLab
+        </Text>
+        <Text style={{color: 'grey', fontSize: 9}}>Version {appVersion}</Text>
       </View>
     </View>
   );

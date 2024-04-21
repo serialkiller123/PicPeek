@@ -7,7 +7,7 @@ const PhotoItem = ({item}) => {
   return (
     <TouchableOpacity
       activeOpacity={0.8}
-      style={{width: 300, height: 200, borderRadius: 10, marginLeft: 20}}
+      style={{width: 300, height: 200, borderRadius: 10, marginLeft: 20, backgroundColor: '#f0f0f0',}}
       onPress={() => {
         navigation.navigate('ViewPhoto', {data: item});
       }}>

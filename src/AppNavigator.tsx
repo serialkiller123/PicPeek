@@ -19,10 +19,14 @@ import AllVideos from './screens/AllVideos';
 import {THEME_COLOR, WHITE} from './utils/Colors';
 import CustomDrawerContent from './components/CustomeDrwawerContent';
 import IonIcons from 'react-native-vector-icons/Ionicons';
+
+
 const stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 const HomeScreen = () => {
+
+  
   return (
     <stack.Navigator>
       <stack.Screen

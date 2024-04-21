@@ -6,10 +6,12 @@ import {useNavigation} from '@react-navigation/native';
 const Splash = () => {
   const navigation = useNavigation();
   useEffect(() => {
-    setTimeout(() => {
-      navigation.navigate('Home');
+    const timer = setTimeout(() => {
+      navigation.replace('Home');
     }, 2000);
-  }, []);
+    return () => clearTimeout(timer);
+  }, [navigation]);
+
   return (
     <View style={styles.contaner}>
       <StatusBar backgroundColor={THEME_COLOR} barStyle={'dark-content'} />

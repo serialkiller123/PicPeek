@@ -12,8 +12,7 @@ async function requestMediaPermissions() {
         PermissionsAndroid.PERMISSIONS.READ_MEDIA_AUDIO,
         PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
         PermissionsAndroid.PERMISSIONS.READ_MEDIA_VIDEO,
-
-        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+        // PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
         PermissionsAndroid.PERMISSIONS.CAMERA,
         // PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
       ];
@@ -55,8 +54,7 @@ async function checkMediaPermissions() {
       PERMISSIONS.ANDROID.READ_MEDIA_AUDIO,
       PERMISSIONS.ANDROID.READ_MEDIA_IMAGES,
       PERMISSIONS.ANDROID.READ_MEDIA_VIDEO,
-
-      PERMISSIONS.ANDROID.RECORD_AUDIO,
+      // PERMISSIONS.ANDROID.RECORD_AUDIO,
       PERMISSIONS.ANDROID.CAMERA,
       // PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
     ];

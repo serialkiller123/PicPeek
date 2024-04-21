@@ -8,6 +8,7 @@ import {
   TextInput,
   FlatList,
   Keyboard,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useState} from 'react';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -17,6 +18,7 @@ import {SEARCH_PHOTOS, SEARCH_VIDEOS, searchData} from '../utils/Apis';
 import PhotoGrid from '../components/PhotoGrid';
 import VideoGrid from '../components/VideoGrid';
 import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const adUnitId = __DEV__
   ? TestIds.ADAPTIVE_BANNER
@@ -29,20 +31,28 @@ const Search = () => {
   const [search, setSearch] = useState('');
   const [photos, setPhotos] = useState([]);
   const [videos, setVideos] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const doSearch = async () => {
-    if (type == 0) {
-      searchData(SEARCH_PHOTOS, search).then(res => {
-        console.log(res);
+    try {
+      setLoading(true);
+      let res;
+      if (type === 0) {
+        res = await searchData(SEARCH_PHOTOS, search);
         setPhotos(res.photos);
-      });
-    } else {
-      searchData(SEARCH_VIDEOS, search).then(res => {
-        console.log(res);
+      } else {
+        res = await searchData(SEARCH_VIDEOS, search);
         setVideos(res.videos);
-      });
+      }
+      console.log(res);
+    } catch (error) {
+      console.error('Error during search:', error);
+      // Handle the error here, such as displaying an error message to the user
+    } finally {
+      setLoading(false);
     }
   };
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle={'light-content'} backgroundColor={THEME_COLOR} />
@@ -77,6 +87,7 @@ const Search = () => {
           onChangeText={setSearch}
           style={styles.input}
           placeholder="Search here...."
+          placeholderTextColor="#999"
         />
         {search !== '' && (
           <TouchableOpacity
@@ -85,21 +96,30 @@ const Search = () => {
               setPhotos([]);
               setVideos([]);
             }}>
-            <Image
-              source={require('../images/cross.png')}
-              style={styles.typeIcon}
-            />
+            <Ionicons name="close-outline" size={26} color={'grey'} />
           </TouchableOpacity>
         )}
       </View>
-      {search != '' && (
+
+      {search !== '' && (
         <TouchableOpacity
           style={styles.searchBtn}
           onPress={() => {
             Keyboard.dismiss();
             doSearch();
           }}>
-          <Text style={styles.searchTitle}>Search</Text>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            {loading ? (
+              <ActivityIndicator
+                size="small"
+                color="white"
+                style={{marginRight: 5}}
+              />
+            ) : null}
+            <Text style={styles.searchTitle}>
+              {loading ? 'Searching...' : 'Search'}
+            </Text>
+          </View>
         </TouchableOpacity>
       )}
       {type == 0 ? (
@@ -225,7 +245,7 @@ const styles = StyleSheet.create({
   },
   input: {
     color: BLACK,
-    marginLeft: 20,
+    marginLeft: 15,
     width: '65%',
   },
   dropBtn: {
